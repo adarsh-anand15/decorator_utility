@@ -109,3 +109,20 @@ def debug(func):
         return value
     return wrapper_debug
 
+
+class cacher:
+    """
+    Class to add cache like functionality to a function
+    """
+    def __init__(self, function):
+        self.function = function
+        self.cached = {}
+    def __call__(self, *args,**kwargs):
+        args_repr = [str(a) for a in args]
+        kwargs_repr = [f"{k}={v}" for k, v in kwargs.items()]
+        dict_key = ", ".join(args_repr + kwargs_repr)
+        try:
+            return self.cached[dict_key]
+        except KeyError:
+            self.cached[dict_key] = self.function(*args,**kwargs)
+            return self.cached[dict_key]
